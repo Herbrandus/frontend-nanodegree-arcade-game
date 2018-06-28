@@ -6,15 +6,17 @@ let Game = {
     timer: setInterval(function(){
         Game.time++;
     }, 500),
+    lanes: [57, 139, 221],
     activeEnemies: 0,
     maxEnemies: 5,
+    enemySpeedMultiplier: 0,
     scoreReachTop: 100,
     scoreGemBlue: 70,
     scoreGemGreen: 50,
-    scoreGemOrange: 25
+    scoreGemOrange: 25,
+    lastEnemySpawn: 0,
+    lastGemSpawn: 0
 };
-
-let lastEnemySpawn = 0;
 
 // Enemies our player must avoid
 var Enemy = function() {
@@ -23,8 +25,7 @@ var Enemy = function() {
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.sprite = 'images/enemy-bug.png';
-    this.lanes = [57, 139, 221];
+    this.sprite = 'images/enemy-bug.png';    
     this.baseSpeed = 80;
     this.maxExtraSpeed = 120;
     this.addSpeed = Math.floor(Math.random() * this.maxExtraSpeed);
@@ -38,15 +39,15 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
 
-    this.x += (this.baseSpeed + this.addSpeed) * dt + (Game.score / 2);
+    this.x += (this.baseSpeed + this.addSpeed) * dt + (Game.enemySpeedMultiplier / 2);
 
     if (this.x > 520) {
         this.x = -120;
-        this.y = this.lanes[Math.floor(Math.random()*3)];
+        this.y = Game.lanes[Math.floor(Math.random()*3)];
         this.addSpeed = Math.floor(Math.random() * this.maxExtraSpeed);
-
     }
 
+    
     if (this.y < player.y + 30 && 
         this.y > player.y - 30 && 
         this.x < player.x + 60 && 
@@ -57,11 +58,9 @@ Enemy.prototype.update = function(dt) {
 
         Game.time = 0;
         Game.score = 0;
+        Game.enemySpeedMultiplier = 0;
         scoreBoard.innerHTML = 'score: ' + Game.score;
 
-        console.log('defeat!');
-
-        player.hide();
     }
 
 };
@@ -83,7 +82,7 @@ var Player = function() {
 
 Player.prototype.update = function (dt) {
 
-    if (lastEnemySpawn < Game.time) {
+    if (Game.lastEnemySpawn < Game.time) {
 
         let i = null;
 
@@ -95,16 +94,16 @@ Player.prototype.update = function (dt) {
             allEnemies[i].x = -100 - (Math.floor(Math.random() * 160));
 
             if (Game.activeEnemies < 2) {
-                allEnemies[i].y = allEnemies[i].lanes[0];
+                allEnemies[i].y = Game.lanes[0];
             } else if (i > 1 && i < 4) {
-                allEnemies[i].y = allEnemies[i].lanes[1];
+                allEnemies[i].y = Game.lanes[1];
             } else {
-                allEnemies[i].y = allEnemies[i].lanes[2];
+                allEnemies[i].y = Game.lanes[2];
             }
 
             Game.activeEnemies++;
 
-            lastEnemySpawn = Game.time;
+            Game.lastEnemySpawn = Game.time;
         }
 
     }
@@ -112,7 +111,8 @@ Player.prototype.update = function (dt) {
     if (this.y < -20) {
         this.x = Game.startX;
         this.y = Game.startY;
-        Game.score++;
+        Game.score += Game.scoreReachTop;
+        Game.enemySpeedMultiplier += 1;
         scoreBoard.innerHTML = 'score: ' + Game.score;
     }
 };
@@ -149,17 +149,68 @@ Player.prototype.handleInput = function (key) {
 };
 
 var Gem = function() {
-    this.x = Game.startX;
-    this.y = 150;
+    this.offsetY = 50;
+    this.gemShow = false;
+    this.gemShowInterval = 15;
+    this.gemTimeTaken = 0;
+    this.possibleX = [  105, 
+                        205, 
+                        305, 
+                        405 ];
+    this.possibleY = [  Game.lanes[0] + this.offsetY, 
+                        Game.lanes[1] + this.offsetY, 
+                        Game.lanes[2] + this.offsetY ];
+    this.x = -200;
+    this.y = -200;
     this.sprite = 'images/Gem Green.png';
 };
 
 Gem.prototype.update = function (dt) {
 
+    if (!this.gemShow) {
+        if (Game.time == this.gemShowInterval ||
+            Game.time == this.gemTimeTaken + this.gemShowInterval) {
+
+            this.x = this.possibleX[ Math.floor(Math.random()*4) ];
+            this.y = this.possibleY[ Math.floor(Math.random()*3) ];
+
+            this.gemShow = true;
+            Game.lastGemSpawn = Game.time;
+
+            console.log('gem spawned');
+        }
+    }
+
+    if (this.y - this.offsetY == player.y && 
+        this.x == player.x) {
+
+        this.gemObtained();
+
+        console.log('this.gemTimeTaken: ' + this.gemTimeTaken);
+        console.log('this.gemShowInterval: ' + this.gemShowInterval);
+        console.log('Game.lastGemSpawn: ' + Game.lastGemSpawn);
+        console.log('Game.time: ' + Game.time);
+
+        console.log('gem taken!');
+    }
 };
 
 Gem.prototype.render = function () {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y, 90, 100);
+};
+
+Gem.prototype.gemObtained = function () {
+    this.resetGem();
+    this.gemTimeTaken = Game.time;
+
+    Game.score += Game.scoreGemBlue;
+    scoreBoard.innerHTML = 'score: ' + Game.score;
+};
+
+Gem.prototype.resetGem = function () {
+    this.gemShow = false;
+    this.x = -200;
+    this.y = -200;
 };
 
 // Now instantiate your objects.
