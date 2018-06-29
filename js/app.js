@@ -135,8 +135,6 @@ CharSelector.prototype.startGame = function (sprite) {
 
 // Enemies our player must avoid
 var Enemy = function() {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
@@ -185,6 +183,7 @@ Enemy.prototype.render = function() {
 // a handleInput() method.
 var Player = function() {
 
+    // available character sprites
     this.spriteChoices = [
                 'images/char-boy.png',
                 'images/char-cat-girl.png',
@@ -192,6 +191,7 @@ var Player = function() {
                 'images/char-pink-girl.png'
         ];
 
+    // set starting position and sprite
     this.x = Game.startX;
     this.y = Game.startY;
     this.sprite = this.spriteChoices[0];
@@ -199,19 +199,27 @@ var Player = function() {
 
 Player.prototype.update = function (dt) {
 
+    // only operational after the game has started
     if (Game.gameStarted) {
 
+        // create enemies in player object because it is already created
+        // and it needs an update function to create the enemies in a timely fashion
+        // not all at the same time
         if (Game.lastEnemySpawn < Game.time) {
 
+            // custom iterator
             let i = null;
 
+            // only create as many enemies as allowed by maxEnemies
             if (Game.activeEnemies < Game.maxEnemies) {
                 
                 i = Game.activeEnemies;
 
+                // add new enemy to allEnemies array and set random x position
                 Game.allEnemies[i] = new Enemy();
                 Game.allEnemies[i].x = -100 - (Math.floor(Math.random() * 160));
 
+                // depending on the enemy number, place the enemy in a different y position
                 if (Game.activeEnemies < 2) {
                     Game.allEnemies[i].y = Game.lanes[0];
                 } else if (i > 1 && i < 4) {
