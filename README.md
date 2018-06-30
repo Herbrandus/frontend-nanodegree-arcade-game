@@ -3,18 +3,25 @@
 ## Table of Contents
 
 * [Instructions](#instructions)
+* [Controls](#controls)
 * [Dependencies](#dependencies)
 * [About](#about)
 * [Contributing](#contributing)
 
+This is a simple Frogger game run with Javascript that let's you control a character. The goal is to move the character across the street and to reach the water without getting hit by the bugs. Each time the character reaches the water the speed of the moving bugs will increase proportionally.
+
 ## Instructions
 
-This is a simple Frogger game that let's you control a character. The goal is to move the character across the street and to reach the water without getting hit by the bugs. Each time the character reaches the water the speed of the moving bugs will increase proportionally.
+To run the game, download this folder to your desktop or upload it to a online environment. Then open `index.html` in your favorite browser and the game will start. You will need a browser with the latest version of Javascript.
+Since the controls are based on keyboard functionality, this game will not be possible to be played on mobile devices with touch screen.
+
+## Controls
+
+Use the arrow keys, return and spacebar to choose your character. After selection and starting the game, use the arrow keys to move your character.
 
 ## Dependencies
 
 This game has no dependencies other than the included resources.js and engine.js.
-
 
 ## About
 
