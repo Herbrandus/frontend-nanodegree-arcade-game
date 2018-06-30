@@ -8,7 +8,7 @@
 * [About](#about)
 * [Contributing](#contributing)
 
-This is a simple Frogger game run with Javascript that let's you control a character. The goal is to move the character across the street and to reach the water without getting hit by the bugs. Each time the character reaches the water the speed of the moving bugs will increase proportionally.
+This is a simple Frogger game run with Javascript that let's you control a character. The goal is to move the character across the street and to reach the water without getting hit by the bugs. Each time the character reaches the water the speed of the moving bugs will increase proportionally. If you get hit by a bug the game will be reset and you will lose your acquired score.
 
 ## Instructions
 
