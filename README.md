@@ -1,11 +1,11 @@
-# Fontend-nanodegree-arcade-game
+# Nanodegree Arcade Game
 
 This is a simple Frogger game run with Javascript that let's you control a character. The goal is to move the character across the street and to reach the water without getting hit by the bugs.
 
 ## Table of Contents
 
 * [Instructions](#instructions)
-* [Playing the game](#controls)
+* [Playing the game](#playing-the-game)
 * [Dependencies](#dependencies)
 * [About](#about)
 * [Contributing](#contributing)
