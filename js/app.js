@@ -330,8 +330,8 @@ var Gem = function() {
 Gem.prototype.update = function (dt) {
 
     // only active in started game
-    if (Game.gameStarted) {
-
+    if (Game.gameStarted) {        
+        
         // if there is no gem shown in the playing field
         if (!this.gemShow) {
             // if 15 time units have passed or
